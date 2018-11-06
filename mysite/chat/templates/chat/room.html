@@ -1,0 +1,173 @@
+<!-- chat/templates/chat/room.html -->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8"/>
+    <title>Chat Room</title>
+</head>
+<style type="text/css">
+    .line-bc {
+        padding: 20px 10px;
+        max-width: 450px;
+        height: 600px;
+        margin: 15px auto;
+        text-align: right;
+        font-size: 14px;
+        background: #7da4cd;
+    }
+
+    .line-chat {
+        max-width: 450px;
+        height: 530px;
+        margin: 15px auto;
+        text-align: right;
+        font-size: 14px;
+        background: #7da4cd;
+        overflow: auto;
+    }
+
+    /*以下、②左側のコメント*/
+    .balloon6 {
+        width: 100%;
+        margin: 10px 0;
+        overflow: hidden;
+    }
+
+    .balloon6 .faceicon {
+        float: left;
+        margin-right: -50px;
+        width: 40px;
+    }
+
+    .balloon6 .faceicon img{
+        width: 100%;
+        height: auto;
+        border-radius: 50%;
+    }
+    .balloon6 .chatting {
+        width: 100%;
+        text-align: left;
+    }
+    .says {
+        display: inline-block;
+        position: relative;
+        margin: 0 0 0 50px;
+        padding: 10px;
+        max-width: 350px;
+        border-radius: 12px;
+        background: #edf1ee;
+        word-break : break-all;
+    }
+
+    .says:after {
+        content: "";
+        display: inline-block;
+        position: absolute;
+        top: 3px;
+        left: -19px;
+        border: 8px solid transparent;
+        border-right: 18px solid #edf1ee;
+        -ms-transform: rotate(35deg);
+        -webkit-transform: rotate(35deg);
+        transform: rotate(35deg);
+    }
+    .says p {
+        margin: 0;
+        padding: 0;
+    }
+
+    /*以下、③右側の緑コメント*/
+    .mycomment {
+        margin: 10px 0;
+    }
+    .mycomment p{
+        display: inline-block;
+        position: relative;
+        margin: 0 10px 0 0;
+        padding: 8px;
+        max-width: 250px;
+        border-radius: 12px;
+        background: #30e852;
+        font-size: 15px;
+    }
+
+    .mycomment p:after {
+        content: "";
+        position: absolute;
+        top: 3px;
+        right: -19px;
+        border: 8px solid transparent;
+        border-left: 18px solid #30e852;
+        -ms-transform: rotate(-35deg);
+        -webkit-transform: rotate(-35deg);
+        transform: rotate(-35deg);
+    }
+</style>
+    <div class="line-bc">
+        <div class="line-chat" id="chat">
+        <div id="line">
+        </div>
+        </div>
+        <div>
+        <input id="chat-message-input" type="text" size="50"/><br/>
+        <input id="chat-message-submit" type="button" value="Send"/>
+        </div>
+    </div>
+</body>
+<script>
+    var roomName = {{ room_name_json }};
+    var session_key = {{ session_key }};
+
+    var chatSocket = new WebSocket(
+        'ws://' + window.location.host +
+        '/ws/chat/' + roomName + '/');
+
+    chatSocket.onmessage = function(e) {
+        var data = JSON.parse(e.data);
+        var message = data['message'];
+        var user = data['user'];
+        var key = data['session_key'];
+        if(key != session_key) {
+            var div_element = document.createElement('div');
+            div_element.className = 'balloon6';
+            div_element.innerHTML = '<div class="chatting"><div class="says"><p>' + message + '</p></div></div>';
+            var parent_object = document.getElementById('line');
+            parent_object.appendChild(div_element);
+            var scroll_obj = document.getElementById('chat');
+            scroll_obj.scrollTop = scroll_obj.scrollHeight;
+        }else {
+            var div_element = document.createElement('div');
+            div_element.className = 'mycomment';
+            div_element.innerHTML = '<p>' + message + '</p>';
+            var parent_object = document.getElementById('line');
+            parent_object.appendChild(div_element);
+            var scroll_obj = document.getElementById('chat');
+            scroll_obj.scrollTop = scroll_obj.scrollHeight;
+        }
+    };
+
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    document.querySelector('#chat-message-input').focus();
+    document.querySelector('#chat-message-input').onkeyup = function(e) {
+        if (e.keyCode === 13) {  // enter, return
+            document.querySelector('#chat-message-submit').click();
+        }
+    };
+
+    document.querySelector('#chat-message-submit').onclick = function(e) {
+        var messageInputDom = document.querySelector('#chat-message-input');
+        var message = messageInputDom.value;
+        if(message) {
+            message = message.replace(/\s/g, '&nbsp;');
+            chatSocket.send(JSON.stringify({
+                'message': message,
+                'session_key': session_key,
+            }));
+            messageInputDom.value = '';
+        }
+    };
+</script>
+</html>
