@@ -85,10 +85,11 @@
         position: relative;
         margin: 0 10px 0 0;
         padding: 8px;
-        max-width: 250px;
+        max-width: 350px;
         border-radius: 12px;
         background: #30e852;
         font-size: 15px;
+        word-break : break-all;
     }
 
     .mycomment p:after {
@@ -103,6 +104,8 @@
         transform: rotate(-35deg);
     }
 </style>
+    {% load static %}
+    <img src="{% static 'chat/test1.png' %}">
     <div class="line-bc">
         <div class="line-chat" id="chat">
         <div id="line">
@@ -113,6 +116,7 @@
         <input id="chat-message-submit" type="button" value="Send"/>
         </div>
     </div>
+    <input id="image" name="image" type="file" />
 </body>
 <script>
     var roomName = {{ room_name_json }};
@@ -122,28 +126,37 @@
         'ws://' + window.location.host +
         '/ws/chat/' + roomName + '/');
 
+    var imageSocket = new WebSocket(
+        'ws://' + window.location.host +
+        '/ws/image/' + roomName + '/');
+
     chatSocket.onmessage = function(e) {
         var data = JSON.parse(e.data);
+        var type = data['type'];
         var message = data['message'];
-        var user = data['user'];
         var key = data['session_key'];
+        var div_element = document.createElement('div');
+        var chatting_element = document.createElement('div');
+        var says_element = document.createElement('div');
+        var p_element = document.createElement('p');
+
         if(key != session_key) {
-            var div_element = document.createElement('div');
             div_element.className = 'balloon6';
-            div_element.innerHTML = '<div class="chatting"><div class="says"><p>' + message + '</p></div></div>';
-            var parent_object = document.getElementById('line');
-            parent_object.appendChild(div_element);
-            var scroll_obj = document.getElementById('chat');
-            scroll_obj.scrollTop = scroll_obj.scrollHeight;
+            chatting_element.className = 'chatting';
+            says_element.className = 'says';
+//            div_element.innerHTML = '<div class="chatting"><div class="says">' + message + '</div></div>';
+            says_element.innerHTML = "<img src='{% static 'chat/test1.png' %}'>";
+            chatting_element.appendChild(says_element);
+            div_element.appendChild(chatting_element);
         }else {
-            var div_element = document.createElement('div');
             div_element.className = 'mycomment';
-            div_element.innerHTML = '<p>' + message + '</p>';
-            var parent_object = document.getElementById('line');
-            parent_object.appendChild(div_element);
-            var scroll_obj = document.getElementById('chat');
-            scroll_obj.scrollTop = scroll_obj.scrollHeight;
+            p_element.textContent =  message ;
+            div_element.appendChild(p_element);
         }
+        var parent_object = document.getElementById('line');
+        parent_object.appendChild(div_element);
+        var scroll_obj = document.getElementById('chat');
+        scroll_obj.scrollTop = scroll_obj.scrollHeight;
     };
 
     chatSocket.onclose = function(e) {
@@ -169,5 +182,19 @@
             messageInputDom.value = '';
         }
     };
+
+    document.getElementById('image')
+        .addEventListener('change', function(evt) {
+            var file = evt.target.files[0];
+            chatSocket.send(file);
+            var div_element = document.createElement('div');
+            div_element.className = 'balloon6';
+            div_element.innerHTML = '<div class="chatting"><div class="says"><p>' + 'aaa' + '</p></div></div>';
+            var parent_object = document.getElementById('line');
+            parent_object.appendChild(div_element);
+            var scroll_obj = document.getElementById('chat');
+            scroll_obj.scrollTop = scroll_obj.scrollHeight;
+        }, false);
+
 </script>
 </html>
