@@ -1,0 +1,163 @@
+.line-bc {
+    padding: 20px 10px;
+    max-width: 450px;
+    height: 600px;
+    margin: 15px auto;
+    text-align: right;
+    font-size: 14px;
+    background: #7da4cd;
+}
+
+.line-chat {
+    max-width: 450px;
+    height: 530px;
+    margin: 15px auto;
+    text-align: right;
+    font-size: 14px;
+    background: #7da4cd;
+    overflow: auto;
+}
+
+.line-input {
+    max-width: 450px;
+    height: 30px;
+    margin: 15px auto;
+    text-align: right;
+    font-size: 14px;
+    background: #7da4cd;
+}
+
+/*以下、②左側のコメント*/
+.balloon6 {
+    width: 100%;
+    margin: 10px 0;
+    overflow: hidden;
+}
+
+.balloon6 .faceicon {
+    float: left;
+    margin-right: -50px;
+    width: 40px;
+}
+
+.balloon6 .faceicon img{
+    width: 100%;
+    height: auto;
+    border-radius: 50%;
+}
+.balloon6 .chatting {
+    width: 100%;
+    text-align: left;
+}
+.says {
+    display: inline-block;
+    position: relative;
+    margin: 0 0 0 50px;
+    padding: 10px;
+    max-width: 350px;
+    border-radius: 12px;
+    background: #edf1ee;
+    word-break : break-all;
+}
+
+.says:after {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    top: 3px;
+    left: -19px;
+    border: 8px solid transparent;
+    border-right: 18px solid #edf1ee;
+    -ms-transform: rotate(35deg);
+    -webkit-transform: rotate(35deg);
+    transform: rotate(35deg);
+}
+.says p {
+    margin: 0;
+    padding: 0;
+}
+
+/*以下、③右側の緑コメント*/
+.mycomment {
+    margin: 10px 0;
+}
+.mycomment p {
+    display: inline-block;
+    position: relative;
+    margin: 0 10px 0 0;
+    padding: 8px;
+    max-width: 350px;
+    border-radius: 12px;
+    background: #30e852;
+    font-size: 15px;
+    word-break : break-all;
+}
+
+.mycomment p:after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    right: -19px;
+    border: 8px solid transparent;
+    border-left: 18px solid #30e852;
+    -ms-transform: rotate(-35deg);
+    -webkit-transform: rotate(-35deg);
+    transform: rotate(-35deg);
+}
+
+.box2 {
+    display: table-cell;
+    width: 330px;
+    padding: 0.5em 0.5em;
+    margin: 2em 0;
+    font-weight: bold;
+    background: #FFF;
+    border: solid 1px #6091d3;
+    border-radius: 10px;
+}
+
+.square_btn {
+    display: table-cell;
+    padding: 0.3em 1em;
+    text-decoration: none;
+    color: white;
+    border: solid 1px #5db2e6;
+    border-radius: 3px;
+    transition: .4s;
+    background: #67c5ff;
+}
+
+.square_btn:hover {
+    display: table-cell;
+    background: #5db2e6;
+    color: white;
+}
+
+.line-input div {
+    display: table-cell;
+}
+
+.line-input label {
+    margin: 0px 10px;
+    font-size: x-large;
+    display: inline-block;
+    text-decoration: none;
+    color: #a0a0a0;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    border-radius: 50%;
+    border: solid 2px #c0c0c0;
+    text-align: center;
+    vertical-align: middle;
+    overflow: hidden;
+    font-weight: bold;
+    transition: .4s;
+    background: #dbdbdb;
+}
+
+.line-input label:hover{
+    background: #a0a0a0;
+    color: #c0c0c0;
+}
+
