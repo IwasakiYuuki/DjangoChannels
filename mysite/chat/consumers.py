@@ -107,6 +107,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         # Send message to WebSocket
         url = event['url']
         user_name = event['user_name']
+        time = event['time']
         await self.send(text_data=json.dumps({
             'type': data_type,
             'url': url,
