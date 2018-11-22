@@ -1,6 +1,6 @@
 <!-- chat/templates/chat/room.html -->
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<html>
 <head>
     {% load static %}
     <meta charset="utf-8"/>
@@ -14,14 +14,16 @@
             </div>
         </div>
         <div class="line-input">
-            <div>
+            <tr>
+            <td>
                 <label for="image">
                 +
                 <input id="image" name="image" type="file" accept="image/png">
                 </label>
-            </div>
-            <div><input id="chat-message-input" size="50" type="text" class="box2"/></div>
-            <div><input id="chat-message-submit" type="button" value="Send" class="square_btn"/></div>
+            </td>
+            <td><input id="chat-message-input" size="50" type="text" class="box2"/></td>
+            <td><input id="chat-message-submit" type="button" value="Send" class="square_btn"/></td>
+            </tr>
         </div>
     </div>
 </body>
@@ -37,39 +39,58 @@
         var data = JSON.parse(e.data);
         var type = data['type'];
         var key = data['session_key'];
+        var time = data['time'];
         var message;
         var url;
         var div_element = document.createElement('div');
         var chatting_element = document.createElement('div');
         var says_element = document.createElement('div');
+        var user_name_element = document.createElement('div');
         var p_element = document.createElement('p');
+        var face_icon_div_element = document.createElement('div');
+        var face_icon_img_element = document.createElement('img');
         var img_element = document.createElement('img');
         var self_img_element = document.createElement('img');
+        var time_element = document.createElement('div');
+        time_element.textContent = time;
         if(key !== session_key) {
             div_element.className = 'balloon6';
             chatting_element.className = 'chatting';
             says_element.className = 'says';
+            user_name_element.className = 'user_name';
+            face_icon_div_element.className = 'faceicon';
+            face_icon_img_element.src = '/static/chat/img/man.png';
+            time_element.className = 'chat_time';
             if(type === 'chat_message'){
                 message = data['message'];
                 says_element.textContent = message;
             }else if(type === 'chat_image'){
                 url = data['url'];
                 img_element.src = url;
+                img_element.width = 300;
                 says_element.appendChild(img_element);
             }
+            user_name_element.textContent=data['user_name'];
+            chatting_element.appendChild(user_name_element);
             chatting_element.appendChild(says_element);
+            chatting_element.appendChild(time_element);
+            face_icon_div_element.appendChild(face_icon_img_element);
+            div_element.appendChild(face_icon_div_element);
             div_element.appendChild(chatting_element);
         }else {
             div_element.className = 'mycomment';
+            time_element.className = 'mycomment_time';
             if(type === 'chat_message'){
                 message = data['message'];
                 p_element.textContent =  message ;
             }else if(type === 'chat_image'){
                 url = data['url'];
                 self_img_element.src = url;
+                self_img_element.width = 300;
                 p_element.appendChild(self_img_element);
             }
             div_element.appendChild(p_element);
+            div_element.appendChild(time_element);
         }
         var parent_object = document.getElementById('line');
         parent_object.appendChild(div_element);

@@ -2,24 +2,39 @@
 <!DOCTYPE html>
 <html>
 <head>
+    {% load static %}
     <meta charset="utf-8"/>
     <title>Chat Rooms</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'chat/css/index.css' %}">
 </head>
 <body>
-    What chat room would you like to enter?<br/>
-    <input id="room-name-input" type="text" size="100"/><br/>
-    <input id="room-name-submit" type="button" value="Enter"/>
-
+<div id="form-main">
+  <div id="form-div">
+    <form class="form" action="{% url 'chat:create_user' %}" method="post">
+        {% csrf_token %}
+      <p class="user_name">
+        <input name="user_name" type="text" class="validate[required,custom[onlyLetter],length[0,100]] feedback-input" placeholder="User" id="user_name" />
+      </p>
+      <p class="room_name">
+        <input name="room_name" type="text" class="validate[required,custom[email]] feedback-input" id="room_name" placeholder="Room" />
+      </p>
+      <div class="submit">
+        <input type="submit" value="JOIN CHAT" id="button-blue"/>
+        <div class="ease"></div>
+      </div>
+    </form>
+  </div>
+</div>
     <script>
-        document.querySelector('#room-name-input').focus();
-        document.querySelector('#room-name-input').onkeyup = function(e) {
+        document.querySelector('#name').focus();
+        document.querySelector('#name').onkeyup = function(e) {
             if (e.keyCode === 13) {  // enter, return
-                document.querySelector('#room-name-submit').click();
+                document.querySelector('#button-blue').click();
             }
         };
 
-        document.querySelector('#room-name-submit').onclick = function(e) {
-            var roomName = document.querySelector('#room-name-input').value;
+        document.querySelector('#button-blue').onclick = function(e) {
+            var roomName = document.querySelector('#email').value;
             window.location.pathname = '/chat/' + roomName + '/';
         };
     </script>
