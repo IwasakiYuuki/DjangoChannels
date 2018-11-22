@@ -1,116 +1,29 @@
 <!-- chat/templates/chat/room.html -->
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<html>
 <head>
+    {% load static %}
     <meta charset="utf-8"/>
     <title>Chat Room</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'chat/css/style.css' %}">
 </head>
-<style type="text/css">
-    .line-bc {
-        padding: 20px 10px;
-        max-width: 450px;
-        height: 600px;
-        margin: 15px auto;
-        text-align: right;
-        font-size: 14px;
-        background: #7da4cd;
-    }
-
-    .line-chat {
-        max-width: 450px;
-        height: 530px;
-        margin: 15px auto;
-        text-align: right;
-        font-size: 14px;
-        background: #7da4cd;
-        overflow: auto;
-    }
-
-    /*以下、②左側のコメント*/
-    .balloon6 {
-        width: 100%;
-        margin: 10px 0;
-        overflow: hidden;
-    }
-
-    .balloon6 .faceicon {
-        float: left;
-        margin-right: -50px;
-        width: 40px;
-    }
-
-    .balloon6 .faceicon img{
-        width: 100%;
-        height: auto;
-        border-radius: 50%;
-    }
-    .balloon6 .chatting {
-        width: 100%;
-        text-align: left;
-    }
-    .says {
-        display: inline-block;
-        position: relative;
-        margin: 0 0 0 50px;
-        padding: 10px;
-        max-width: 350px;
-        border-radius: 12px;
-        background: #edf1ee;
-        word-break : break-all;
-    }
-
-    .says:after {
-        content: "";
-        display: inline-block;
-        position: absolute;
-        top: 3px;
-        left: -19px;
-        border: 8px solid transparent;
-        border-right: 18px solid #edf1ee;
-        -ms-transform: rotate(35deg);
-        -webkit-transform: rotate(35deg);
-        transform: rotate(35deg);
-    }
-    .says p {
-        margin: 0;
-        padding: 0;
-    }
-
-    /*以下、③右側の緑コメント*/
-    .mycomment {
-        margin: 10px 0;
-    }
-    .mycomment p{
-        display: inline-block;
-        position: relative;
-        margin: 0 10px 0 0;
-        padding: 8px;
-        max-width: 250px;
-        border-radius: 12px;
-        background: #30e852;
-        font-size: 15px;
-    }
-
-    .mycomment p:after {
-        content: "";
-        position: absolute;
-        top: 3px;
-        right: -19px;
-        border: 8px solid transparent;
-        border-left: 18px solid #30e852;
-        -ms-transform: rotate(-35deg);
-        -webkit-transform: rotate(-35deg);
-        transform: rotate(-35deg);
-    }
-</style>
+<body>
     <div class="line-bc">
         <div class="line-chat" id="chat">
-        <div id="line">
+            <div id="line">
+            </div>
         </div>
-        </div>
-        <div>
-        <input id="chat-message-input" type="text" size="50"/><br/>
-        <input id="chat-message-submit" type="button" value="Send"/>
+        <div class="line-input">
+            <tr>
+            <td>
+                <label for="image">
+                +
+                <input id="image" name="image" type="file" accept="image/png">
+                </label>
+            </td>
+            <td><input id="chat-message-input" size="50" type="text" class="box2"/></td>
+            <td><input id="chat-message-submit" type="button" value="Send" class="square_btn"/></td>
+            </tr>
         </div>
     </div>
 </body>
@@ -124,26 +37,65 @@
 
     chatSocket.onmessage = function(e) {
         var data = JSON.parse(e.data);
-        var message = data['message'];
-        var user = data['user'];
+        var type = data['type'];
         var key = data['session_key'];
-        if(key != session_key) {
-            var div_element = document.createElement('div');
+        var time = data['time'];
+        var message;
+        var url;
+        var div_element = document.createElement('div');
+        var chatting_element = document.createElement('div');
+        var says_element = document.createElement('div');
+        var user_name_element = document.createElement('div');
+        var p_element = document.createElement('p');
+        var face_icon_div_element = document.createElement('div');
+        var face_icon_img_element = document.createElement('img');
+        var img_element = document.createElement('img');
+        var self_img_element = document.createElement('img');
+        var time_element = document.createElement('div');
+        time_element.textContent = time;
+        if(key !== session_key) {
             div_element.className = 'balloon6';
-            div_element.innerHTML = '<div class="chatting"><div class="says"><p>' + message + '</p></div></div>';
-            var parent_object = document.getElementById('line');
-            parent_object.appendChild(div_element);
-            var scroll_obj = document.getElementById('chat');
-            scroll_obj.scrollTop = scroll_obj.scrollHeight;
+            chatting_element.className = 'chatting';
+            says_element.className = 'says';
+            user_name_element.className = 'user_name';
+            face_icon_div_element.className = 'faceicon';
+            face_icon_img_element.src = '/static/chat/img/man.png';
+            time_element.className = 'chat_time';
+            if(type === 'chat_message'){
+                message = data['message'];
+                says_element.textContent = message;
+            }else if(type === 'chat_image'){
+                url = data['url'];
+                img_element.src = url;
+                img_element.width = 300;
+                says_element.appendChild(img_element);
+            }
+            user_name_element.textContent=data['user_name'];
+            chatting_element.appendChild(user_name_element);
+            chatting_element.appendChild(says_element);
+            chatting_element.appendChild(time_element);
+            face_icon_div_element.appendChild(face_icon_img_element);
+            div_element.appendChild(face_icon_div_element);
+            div_element.appendChild(chatting_element);
         }else {
-            var div_element = document.createElement('div');
             div_element.className = 'mycomment';
-            div_element.innerHTML = '<p>' + message + '</p>';
-            var parent_object = document.getElementById('line');
-            parent_object.appendChild(div_element);
-            var scroll_obj = document.getElementById('chat');
-            scroll_obj.scrollTop = scroll_obj.scrollHeight;
+            time_element.className = 'mycomment_time';
+            if(type === 'chat_message'){
+                message = data['message'];
+                p_element.textContent =  message ;
+            }else if(type === 'chat_image'){
+                url = data['url'];
+                self_img_element.src = url;
+                self_img_element.width = 300;
+                p_element.appendChild(self_img_element);
+            }
+            div_element.appendChild(p_element);
+            div_element.appendChild(time_element);
         }
+        var parent_object = document.getElementById('line');
+        parent_object.appendChild(div_element);
+        var scroll_obj = document.getElementById('chat');
+        scroll_obj.scrollTop = scroll_obj.scrollHeight;
     };
 
     chatSocket.onclose = function(e) {
@@ -161,7 +113,6 @@
         var messageInputDom = document.querySelector('#chat-message-input');
         var message = messageInputDom.value;
         if(message) {
-            message = message.replace(/\s/g, '&nbsp;');
             chatSocket.send(JSON.stringify({
                 'message': message,
                 'session_key': session_key,
@@ -169,5 +120,15 @@
             messageInputDom.value = '';
         }
     };
+
+    document.getElementById('image')
+        .addEventListener('change', function(evt) {
+            var file = evt.target.files[0];
+            var input = document.querySelector('#image');
+            chatSocket.send(file);
+            input.value = '';
+
+        }, false);
+
 </script>
 </html>

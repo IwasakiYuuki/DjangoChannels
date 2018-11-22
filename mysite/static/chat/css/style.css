@@ -1,0 +1,191 @@
+@import url(https://fonts.googleapis.com/css?family=Montserrat:400,700);
+
+html {
+    background:url(http://thekitemap.com/images/feedback-img.jpg) no-repeat;
+    background-size: cover;
+    height:100%;
+}
+
+.line-bc {
+    padding: 0px 0px;
+    max-width: 450px;
+    height: 650px;
+    margin: 0px auto;
+    text-align: right;
+    font-size: 14px;
+    background: #6c9dd8;
+}
+
+.line-chat {
+    max-width: 100%;
+    height: 600px;
+    padding: 0px 0px 0px 0px;
+    margin: 0px 0px 0px 0px;
+    text-align: right;
+    font-size: 14px;
+    background: #6c9dd8;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.line-input {
+    width: 450px;
+    height: 50px;
+    margin: auto;
+    font-size: 14px;
+    background: #5d5d5d;
+}
+
+/*以下、②左側のコメント*/
+.balloon6 {
+    width: 100%;
+    margin: 10px 0 10px 4px;
+    overflow: hidden;
+}
+
+.balloon6 .faceicon {
+    float: left;
+    margin-right: -50px;
+    width: 40px;
+}
+
+.balloon6 .faceicon img{
+    margin-top: 10px;
+    width: 100%;
+    height: auto;
+    border-radius: 50%;
+}
+
+.balloon6 .chatting {
+    width: 100%;
+    text-align: left;
+}
+
+.user_name {
+    margin: 0 0 5px 50px;
+    color: #eaeaea;
+}
+
+.says {
+    display: inline-block;
+    position: relative;
+    margin: 0 0 0 50px;
+    padding: 10px;
+    max-width: 350px;
+    border-radius: 12px;
+    background: #edf1ee;
+    word-break : break-all;
+}
+
+.chat_time {
+    font-size: smaller;
+    color: #eaeaea;
+    margin-left: 5px;
+}
+
+.says:after {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    top: 3px;
+    left: -19px;
+    border: 8px solid transparent;
+    border-right: 18px solid #edf1ee;
+    -ms-transform: rotate(35deg);
+    -webkit-transform: rotate(35deg);
+    transform: rotate(35deg);
+}
+.says p {
+    margin: 0;
+    padding: 0;
+}
+
+/*以下、③右側の緑コメント*/
+.mycomment {
+    margin: 10px 4px 0 0;
+}
+
+.mycomment p {
+    display: inline-block;
+    position: relative;
+    margin: 0 10px 0 0;
+    padding: 8px;
+    max-width: 350px;
+    border-radius: 12px;
+    background: #30e852;
+    font-size: 15px;
+    word-break : break-all;
+}
+
+.mycomment p:after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    right: -19px;
+    border: 8px solid transparent;
+    border-left: 18px solid #30e852;
+    -ms-transform: rotate(-35deg);
+    -webkit-transform: rotate(-35deg);
+    transform: rotate(-35deg);
+}
+
+.mycomment_time {
+    font-size: smaller;
+    color: #eaeaea;
+    margin-top: 1px;
+    margin-right: 5px;
+}
+
+.box2 {
+    width: 330px;
+    padding: 0.5em 0.5em;
+    margin: 10px 0;
+    font-weight: bold;
+    background: #FFF;
+    border: solid 1px #c7c7c7;
+    border-radius: 10px;
+}
+
+.square_btn {
+    padding: 0.5em 0.5em;
+    margin: 10px 5px;
+    text-decoration: none;
+    color: white;
+    border: solid 1px #5db2e6;
+    border-radius: 3px;
+    transition: .4s;
+    background: #67c5ff;
+}
+
+.square_btn:hover {
+    background: #5db2e6;
+    color: white;
+}
+
+.line-input td {
+}
+
+.line-input label {
+    margin: 10px 5px;
+    font-size: x-large;
+    display: inline-block;
+    text-decoration: none;
+    color: #a0a0a0;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    border-radius: 50%;
+    border: solid 2px #c0c0c0;
+    text-align: center;
+    vertical-align: middle;
+    overflow: hidden;
+    font-weight: bold;
+    transition: .4s;
+    background: #dbdbdb;
+}
+
+.line-input label:hover{
+    background: #a0a0a0;
+    color: #c0c0c0;
+}
+
