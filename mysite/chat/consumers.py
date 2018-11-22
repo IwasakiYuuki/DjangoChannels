@@ -3,14 +3,14 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.auth import login, logout, get_user
 import json
 import cv2
-import datetime
+from datetime import datetime, timezone
 import os
 
 
 def create_img_path():
     dir_path = os.path.abspath(os.path.curdir) + '/static/chat/img/'
     extention = '.png'
-    time = str(datetime.datetime.now()).replace(' ', '_')
+    time = str(datetime.now()).replace(' ', '_')
     return dir_path + time + extention
 
 
@@ -46,37 +46,41 @@ class ChatConsumer(AsyncWebsocketConsumer):
     # Receive message from WebSocket
     async def receive(self, text_data=None, bytes_data=None):
         key = self.session.session_key
+        user_name = self.session['user_name']
+        time = datetime.now()
+        time = format(time.hour, '02') + ':' + format(time.minute, '02')
         if text_data:
             text_data_json = json.loads(text_data)
             message = text_data_json['message']
             # Send message to room group
-            print(message)
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
                     'type': 'chat_message',
                     'message': message,
                     'session_key': key,
+                    'user_name': user_name,
+                    'time': time,
                 }
             )
         elif bytes_data:
             filename = create_img_path()
-            print('filename =', filename)
             rel_path = '/'+str(os.path.relpath(filename))
-            print('rel_path =', rel_path)
             with open(filename, 'wb') as f:
                 f.write(bytes_data)
-            img = cv2.imread(filename)
-            height, width, _ = img.shape
-            if width > 300:
-                img = resize_img(img, 300)
-                cv2.imwrite(filename, img)
+#            img = cv2.imread(filename)
+#            height, width, _ = img.shape
+#            if width > 300:
+#                img = resize_img(img, 300)
+#                cv2.imwrite(filename, img)
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
                     'type': 'chat_image',
                     'url': rel_path,
                     'session_key': key,
+                    'user_name': user_name,
+                    'time': time,
                 }
             )
 
@@ -86,10 +90,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
         key = event['session_key']
         # Send message to WebSocket
         message = event['message']
+        user_name = event['user_name']
+        time = event['time']
         await self.send(text_data=json.dumps({
             'type': data_type,
             'message': message,
-            'session_key': key
+            'session_key': key,
+            'user_name': user_name,
+            'time': time,
         }))
 
     # Receive message from room group
@@ -98,8 +106,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
         key = event['session_key']
         # Send message to WebSocket
         url = event['url']
+        user_name = event['user_name']
         await self.send(text_data=json.dumps({
             'type': data_type,
             'url': url,
-            'session_key': key
+            'session_key': key,
+            'user_name': user_name,
+            'time': time,
         }))
