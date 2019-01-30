@@ -28,9 +28,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = 'chat_%s' % self.room_name
         self.session = self.scope['session']
-        self.session['user_name'] = self.scope['user_name']
-        self.session['user_id'] = self.scope['user_id']
-        print(self.session['user_name'])
         self.session.save()
         # Join room group
         await self.channel_layer.group_add(
@@ -52,6 +49,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         user_name = self.session['user_name']
         time = datetime.now()
         time = format(time.hour, '02') + ':' + format(time.minute, '02')
+        icon_url = self.session['icon_url']
         if text_data:
             text_data_json = json.loads(text_data)
             message = text_data_json['message']
@@ -63,6 +61,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     'message': message,
                     'session_key': key,
                     'user_name': user_name,
+                    'icon_url': icon_url,
                     'time': time,
                 }
             )
@@ -83,6 +82,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     'url': rel_path,
                     'session_key': key,
                     'user_name': user_name,
+                    'icon_url': icon_url,
                     'time': time,
                 }
             )
@@ -95,11 +95,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
         message = event['message']
         user_name = event['user_name']
         time = event['time']
+        icon_url = event['icon_url']
         await self.send(text_data=json.dumps({
             'type': data_type,
             'message': message,
             'session_key': key,
             'user_name': user_name,
+            'icon_url': icon_url,
             'time': time,
         }))
 
@@ -111,10 +113,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
         url = event['url']
         user_name = event['user_name']
         time = event['time']
+        icon_url = event['icon_url']
         await self.send(text_data=json.dumps({
             'type': data_type,
             'url': url,
             'session_key': key,
             'user_name': user_name,
+            'icon_url': icon_url,
             'time': time,
         }))
