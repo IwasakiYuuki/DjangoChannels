@@ -28,6 +28,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = 'chat_%s' % self.room_name
         self.session = self.scope['session']
+        self.session['user_name'] = self.scope['user_name']
+        self.session['user_id'] = self.scope['user_id']
+        print(self.session['user_name'])
         self.session.save()
         # Join room group
         await self.channel_layer.group_add(
