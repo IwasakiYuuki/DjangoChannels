@@ -1,34 +1,27 @@
 from django.shortcuts import render, redirect
 from django.utils.safestring import mark_safe
 import json
-import google_auth_oauthlib.flow
-from django.conf import settings
-from oauthlib.oauth2 import MissingCodeError
-from .models import Credentials
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 
 
 @login_required
 def index(request):
     return render(request, 'chat/index.html', {})
+    # TODO: arrange login form of google
 
 
+@login_required
 def create_user(request):
-    print(request.user)
-    print(request.user.profile)
-    print(request.user.profile.avatar)
     request.session.create()
     request.session['user_name'] = request.user.profile.user_name
     request.session['room_name'] = request.POST.get(key='room_name')
     request.session['icon_url'] = request.user.profile.avatar
     return redirect('chat:room')
+    # TODO: arrange form to enter room
 
 
+@login_required
 def room(request):
-    print(request.user.id)
-    print(request.user.profile)
-    print(request.user.profile.avatar)
     key = request.session.session_key or None
     if key:
         room_name = request.session['room_name']
@@ -40,13 +33,12 @@ def room(request):
     else:
         return render(request, 'chat/index.html', {})
 
-
-#def test(request):
+# def test(request):
 #    return render(request, 'chat/test.html', {})
 
 
-#@login_required
-#def auth(request):
+# @login_required
+# def auth(request):
 #    print('aaa')
 #    print(request.user)
 #    print(type(request.user))
@@ -68,8 +60,8 @@ def room(request):
 #    return redirect(authorization_url)
 #
 #
-#@login_required
-#def callback(request):
+# @login_required
+# def callback(request):
 #    if hasattr(request.user, 'credentials'):
 #        return render(request, 'chat/index.html', {})
 #
@@ -97,4 +89,3 @@ def room(request):
 #            user=request.user
 #        )
 #    return render(request, 'chat/room.html', {})
-
